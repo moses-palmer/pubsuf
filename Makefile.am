@@ -23,13 +23,26 @@ lib_LTLIBRARIES = libpubsuf-@API_VERSION@.la
 ## tools/effective_tld_names.dat is the list of effective TLD names from
 ## Mozilla.
 BUILT_SOURCES = \
-	tools/effective_tld_names.dat
+	tools/effective_tld_names.dat \
+	pubsuf/etlds.c \
+	pubsuf/etlds.h
 CLEANFILES = \
-	tools/effective_tld_names.dat
+	tools/effective_tld_names.dat \
+	pubsuf/etlds.c \
+	pubsuf/etlds.h
 
 ## Download the effective TLDs from Mozilla.
 tools/effective_tld_names.dat:
 	sh tools/effective_tld_names.sh
+
+## Convert the effective TLD names list to C source.
+pubsuf/etlds.c: tools/effective_tld_names.dat
+	python tools/etld-parser.py \
+		"tools/effective_tld_names.dat" \
+		"pubsuf/etlds.h" \
+		"pubsuf/etlds.c"
+
+pubsuf/etlds.h: pubsuf/etlds.c
 
 
 ## Define the source file list for the "libpubsuf-@API_VERSION@.la" target.
