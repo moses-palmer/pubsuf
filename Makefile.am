@@ -18,6 +18,20 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 lib_LTLIBRARIES = libpubsuf-@API_VERSION@.la
 
 
+## This library depends on generated data.
+##
+## tools/effective_tld_names.dat is the list of effective TLD names from
+## Mozilla.
+BUILT_SOURCES = \
+	tools/effective_tld_names.dat
+CLEANFILES = \
+	tools/effective_tld_names.dat
+
+## Download the effective TLDs from Mozilla.
+tools/effective_tld_names.dat:
+	sh tools/effective_tld_names.sh
+
+
 ## Define the source file list for the "libpubsuf-@API_VERSION@.la" target.
 ## Note that @API_VERSION@ is not interpreted by Automake and will therefore be
 ## treated as if it were literally part of the target name, and the variable
