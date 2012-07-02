@@ -18,9 +18,33 @@
 # Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
+def read_etlds(input_file):
+    """
+    Reads all effective TLDs found in input file.
+
+    The list returned will keep the order from the the input file.
+
+    @param input_file, file
+        An opened file containing the effective TLD definitions.
+    @return a sequence of str
+    """
+    def strip(l):
+        if not l:
+            return l
+        return l[0 if l[0] != '.' else 1:l.find('//')].strip()
+
+    return filter(lambda l: len(l) > 0,
+        (strip(l).decode('utf-8') for l in input_file.readlines()))
+
+
 def main(database, header_name, source_name):
-    # TODO: Parse effective_tld_names and write the output
-    pass
+    # Read all effective TLDs from the database
+    with open(database, 'r') as f:
+        etlds = read_etlds(f)
+
+    # TODO: Sort the eTLDs and write the header and source file
+
+    return 0;
 
 if __name__ == '__main__':
     import sys
