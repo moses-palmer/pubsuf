@@ -38,11 +38,15 @@ def read_etlds(input_file):
 
 
 def main(database, header_name, source_name):
-    # Read all effective TLDs from the database
+    # Read all effective TLDs from the database and sort them on string value,
+    # and make sure exceptions and then wildcards are preferred within every
+    # depth segment
     with open(database, 'r') as f:
         etlds = read_etlds(f)
+    etlds.sort()
+    etlds.sort(key = lambda s: 0 if s[0] == '!' else 1 if s[0] == '*' else 2)
 
-    # TODO: Sort the eTLDs and write the header and source file
+    # TODO: Write the header and source file
 
     return 0;
 
