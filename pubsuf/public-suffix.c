@@ -36,7 +36,22 @@ public_suffix_test(const char *string, int depth)
 int
 public_suffix_get_depth(const char *string)
 {
-    /* TODO: Implement */
-    return 0;
+    const char *s;
+    int result = 1;
+
+    /* Check for NULL input */
+    if (!string) {
+        return 0;
+    }
+
+    /* Skip the first character; if this is '.', it must not influence the
+       result */
+    for (s = string + 1; *s; s++) {
+        if (*s == '.') {
+            result++;
+        }
+    }
+
+    return result;
 }
 

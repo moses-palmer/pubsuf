@@ -3,3 +3,47 @@
 #define TEST_NO_TEARDOWN
 #define TEST_NONINTERACTIVE
 #define TEST_RUN
+
+#include <pubsuf.h>
+
+TEST(public_suffix_get_depth0,
+    "public_suffix_get_depth for NULL argument",
+    ,
+
+    assert_eq(public_suffix_get_depth(NULL), 0);
+    ,
+)
+
+TEST(public_suffix_get_depth1,
+    "public_suffix_get_depth for argument containing no dots",
+    ,
+
+    assert_eq(public_suffix_get_depth("com"), 1);
+    ,
+)
+
+TEST(public_suffix_get_depth2,
+    "public_suffix_get_depth for argument containing initial dot only",
+    ,
+
+    assert_eq(public_suffix_get_depth(".com"), 1);
+    ,
+)
+
+TEST(public_suffix_get_depth3,
+    "public_suffix_get_depth for argument containing dots",
+    ,
+
+    assert_eq(public_suffix_get_depth("co.uk"), 2);
+    assert_eq(public_suffix_get_depth("test.co.uk"), 3);
+    ,
+)
+
+TEST(public_suffix_get_depth4,
+    "public_suffix_get_depth for argument containing dots and initial dot",
+    ,
+
+    assert_eq(public_suffix_get_depth(".co.uk"), 2);
+    assert_eq(public_suffix_get_depth(".test.co.uk"), 3);
+    ,
+)
