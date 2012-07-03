@@ -7,7 +7,7 @@
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lessser General Public License
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -15,10 +15,28 @@
  * Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef PUBSUF_H
-#define PUBSUF_H
+#include <stdlib.h>
 
-#include "pubsuf/public-suffix.h"
+#include "public-suffix.h"
 
-#endif
+const char*
+public_suffix_get_domain_name(const char *hostname)
+{
+    /* TODO: Implement */
+    return NULL;
+}
+
+int
+public_suffix_test(const char *string, int depth)
+{
+    /* TODO: Implement */
+    return 0;
+}
+
+int
+public_suffix_get_depth(const char *string)
+{
+    /* TODO: Implement */
+    return 0;
+}
 

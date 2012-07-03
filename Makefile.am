@@ -22,7 +22,8 @@ lib_LTLIBRARIES = libpubsuf-@API_VERSION@.la
 ## Note that @API_VERSION@ is not interpreted by Automake and will therefore be
 ## treated as if it were literally part of the target name, and the variable
 ## name derived from that.
-libpubsuf_@API_VERSION@_la_SOURCES =
+libpubsuf_@API_VERSION@_la_SOURCES = \
+	pubsuf/public-suffix.c
 
 
 ## Instruct libtool to include ABI version information in the generated shared
@@ -38,7 +39,8 @@ libpubsuf_@API_VERSION@_la_LDFLAGS = -version-info $(SO_VERSION)
 ## source tree matches the hierarchy at the install location, however.
 pubsuf_includedir = $(includedir)/pubsuf-$(API_VERSION)
 nobase_pubsuf_include_HEADERS = \
-	pubsuf.h
+	pubsuf.h \
+	pubsuf/public-suffix.h
 
 
 ## Install the generated pkg-config file (.pc) into the expected location for
