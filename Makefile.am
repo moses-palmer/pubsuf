@@ -110,7 +110,8 @@ pubsuftest_SOURCES = \
 
 ## Make sure the test program depends on all test definition files
 EXTRA_pubsuftest_DEPENDENCIES = \
-	tests/tests.def
+	tests/tests.def \
+	tests/etld-tests.def
 
 ## Link the test program
 pubsuftest_LDFLAGS = -l:.libs/libpubsuf-$(API_VERSION).so

@@ -47,3 +47,5 @@ TEST(public_suffix_get_depth4,
     assert_eq(public_suffix_get_depth(".test.co.uk"), 3);
     ,
 )
+
+#include "etld-tests.def"
