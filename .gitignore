@@ -3,10 +3,12 @@
 /Makefile.in
 /aclocal.m4
 /autom4te.cache/
+/compile
 /config*
 /depcomp
 /pubsuf-*.pc
 /pubsuf-*.tar.*
+/pubsuftest
 /install-sh
 /libtool
 /ltmain.sh
@@ -16,3 +18,4 @@
 .dirstamp
 .libs/
 *.l[ao]
+*.o

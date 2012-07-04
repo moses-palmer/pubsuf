@@ -83,3 +83,22 @@ pkgconfig_DATA = pubsuf-$(API_VERSION).pc
 ## archive. However, it will not be installed on an end user's system due to
 ## the noinst_ prefix.
 dist_noinst_SCRIPTS = autogen.sh
+
+
+## Build a test program, but do not install it
+check_PROGRAMS = pubsuftest
+
+## Simply compile all source files when building the test program
+pubsuftest_SOURCES = \
+	tests/test/test-main.c
+
+## Make sure the test program depends on all test definition files
+EXTRA_pubsuftest_DEPENDENCIES = \
+	tests/tests.def
+
+## Link the test program
+pubsuftest_LDFLAGS = -l:.libs/libpubsuf-$(API_VERSION).so
+
+## Run pubsuftest as part of the test suite
+TESTS = pubsuftest
+TESTS_ENVIRONMENT = LD_LIBRARY_PATH=.libs

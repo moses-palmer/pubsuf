@@ -8,6 +8,9 @@ if test "x$WGET" = "xno"; then
 	AC_MSG_ERROR([This library requires wget to build])
 fi
 
+## Add support for per-product flags
+AM_PROG_CC_C_O
+
 AC_CONFIG_HEADERS([config.h])
 LT_INIT([disable-static])
 

@@ -1,0 +1,5 @@
+#define TEST_SUITE pubsuf
+#define TEST_NO_SETUP
+#define TEST_NO_TEARDOWN
+#define TEST_NONINTERACTIVE
+#define TEST_RUN
