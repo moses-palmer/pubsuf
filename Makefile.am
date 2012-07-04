@@ -28,12 +28,14 @@ BUILT_SOURCES = \
 	tools/effective_tld_names.dat \
 	pubsuf/etlds.c \
 	pubsuf/etlds.h \
-	tools/test.txt
+	tools/test.txt \
+	tests/etld-tests.def
 CLEANFILES = \
 	tools/effective_tld_names.dat \
 	pubsuf/etlds.c \
 	pubsuf/etlds.h \
-	tools/test.txt
+	tools/test.txt \
+	tests/etld-tests.def
 
 ## Download the effective TLDs from Mozilla.
 tools/effective_tld_names.dat:
@@ -51,6 +53,12 @@ pubsuf/etlds.h: pubsuf/etlds.c
 ## Download the test definitions from Mozilla.
 tools/test.txt:
 	sh tools/test.sh
+
+## Convert the test text file to a test definition file.
+tests/etld-tests.def: tools/test.txt
+	python tools/test-parser.py \
+		"tools/test.txt" \
+		"tests/etld-tests.def"
 
 
 ## Define the source file list for the "libpubsuf-@API_VERSION@.la" target.
