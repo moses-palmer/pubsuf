@@ -23,7 +23,57 @@
 const char*
 public_suffix_get_domain_name(const char *hostname)
 {
-    /* TODO: Implement */
+    const char *s;
+
+    /* Check for NULL input */
+    if (!hostname) {
+        return NULL;
+    }
+
+    /* Go to the end of the string */
+    s = hostname;
+    while (*s) s++; s--;
+
+    /* Find the first possible start of the public suffix */
+    int depth = 0;
+    while (1) {
+        /* Find the previous segment */
+        while (s > hostname && *s != '.') s--;
+        depth++;
+
+        /* Break if at the start of the hostname or if we have reached the
+           maximum depth */
+        if (s == hostname) {
+            break;
+        }
+        else if (depth == ETLDS_MAX_DEPTH) {
+            s++;
+            break;
+        }
+
+        /* We are at a dot; skip to the previous character */
+        s--;
+    }
+
+    /* Test all depths lower than or equal to the depth found */
+    while (depth) {
+        if (public_suffix_test(s, depth)) {
+            /* A public suffix is not a domain */
+            if (s == hostname) {
+                return NULL;
+            }
+
+            /* Find the previous segment */
+            s -= 2;
+            while (s > hostname && *s != '.') s--;
+            return *s == '.' ? s + 1 : s;
+        }
+
+        depth--;
+        while (*s != '.') s++;
+        s++;
+    }
+
     return NULL;
 }
 
