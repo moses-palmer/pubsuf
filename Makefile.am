@@ -50,6 +50,7 @@ pubsuf/etlds.h: pubsuf/etlds.c
 ## treated as if it were literally part of the target name, and the variable
 ## name derived from that.
 libpubsuf_@API_VERSION@_la_SOURCES = \
+	pubsuf/etlds.c \
 	pubsuf/public-suffix.c
 
 
