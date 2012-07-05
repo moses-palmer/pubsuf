@@ -148,9 +148,17 @@ public_suffix_test(const char *string, int depth)
             current++;
         }
 
-        /* If the rule matches, quit */
-        if (suffix_cmp(string, current) == 0) {
+        /* Check whether this is a wildcard */
+        int is_wildcard = *current == '*';
+
+        /* If the rule matches, quit; if the rule is greater than the string and
+           not an exception or a wildcard, stop checking */
+        int result = suffix_cmp(string, current);
+        if (result == 0) {
             return !is_exception;
+        }
+        else if (result < 0 && !is_exception && !is_wildcard) {
+            break;
         }
     }
 
@@ -169,10 +177,16 @@ public_suffix_test(const char *string, int depth)
             /* Check all wildcards */
             int is_wildcard = *current == '*';
             if (is_wildcard) {
-                if (suffix_cmp(string, current + 2) == 0) {
+                int result = suffix_cmp(string, current + 2);
+                if (result == 0) {
                     return 1;
                 }
-                continue;
+                else if (result < 0) {
+                    break;
+                }
+                else {
+                    continue;
+                }
             }
 
             break;
