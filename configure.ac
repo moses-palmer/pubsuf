@@ -1,5 +1,5 @@
 AC_INIT([LibPubSuf], [1.0], [mosespalmer@gmail.com], [pubsuf])
-AC_PREREQ([2.59])
+AC_PREREQ([2.62])
 AM_INIT_AUTOMAKE([1.10 -Wall -Werr])
 
 ## This library requires wget to build
@@ -7,6 +7,12 @@ AC_CHECK_PROG(WGET, [wget], [yes], [no])
 if test "x$WGET" = "xno"; then
 	AC_MSG_ERROR([This library requires wget to build])
 fi
+
+## Load packaged macros
+AC_CONFIG_MACRO_DIR([m4])
+
+## Add support for GObject introspection
+GOBJECT_INTROSPECTION_CHECK([1.30.0])
 
 ## Add support for per-product flags
 AM_PROG_CC_C_O

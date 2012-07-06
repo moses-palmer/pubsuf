@@ -19,6 +19,8 @@
 #define PUBSUF_PUBLIC_SUFFIX_H
 
 /**
+ * public_suffix_get_domain_name:
+ *
  * Retrieves the domain name from a host name.
  *
  * The domain name starts at the host name section before the public suffix;
@@ -31,15 +33,18 @@
  *
  * The input string MUST be lowercase UTF-8. If it is NULL, it is not accessed.
  *
- * @param hostname
- *     The hostname for which to retrieve the domain name.
- * @return the domain name for the host name, or NULL
+ * @hostname: (in) (transfer none): The hostname for which to retrieve the \
+       domain name.
+ *
+ * Returns: (transfer none): the domain name for the host name, or NULL
  * @see public_suffix_test
  */
 const char*
 public_suffix_get_domain_name(const char *hostname);
 
 /**
+ * public_suffix_test:
+ *
  * Tests whether a string is a public suffix.
  *
  * A string is a public suffix if it matches any of the rules in the effective
@@ -47,20 +52,22 @@ public_suffix_get_domain_name(const char *hostname);
  *
  * The input string MUST be lowercase UTF-8. If it is NULL, it is not accessed.
  *
- * @param string
- *     The string to test. This must be on the form .public.suffix or
- *     public.suffix.
- * @param depth
- *     The depth of the string. This should be the return value of
- *     public_suffix_get_depth(string), or a negative value to have it
- *     calculated.
- * @return whether string is a public suffix and non-NULL
+ * @string: (in) (transfer none): The string to test. This must be on the form \
+       .public.suffix or public.suffix.
+ *
+ * @depth: (in) (default -1): The depth of the string. This should be the \
+       return value of public_suffix_get_depth(string), or a negative value to \
+       have it calculated.
+ *
+ * Returns: (type gboolean): whether string is a public suffix and non-NULL
  * @see public_suffix_get_depth
  */
 int
 public_suffix_test(const char *string, int depth);
 
 /**
+ * public_suffix_get_depth:
+ *
  * Retrieves the depth of a string.
  *
  * The depth is calculated as the number of dots in string, excluding the first
@@ -68,9 +75,9 @@ public_suffix_test(const char *string, int depth);
  *
  * The input string MUST be lowercase UTF-8. If it is NULL, it is not accessed.
  *
- * @param string
- *     The string to check.
- * @return the depth of the string, or 0 if string is NULL
+ * @string: (in): The string to check.
+ *
+ * Returns: the depth of the string, or 0 if string is NULL
  */
 int
 public_suffix_get_depth(const char *string);

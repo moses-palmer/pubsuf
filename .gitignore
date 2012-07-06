@@ -17,5 +17,7 @@
 .deps/
 .dirstamp
 .libs/
+*.gir
 *.l[ao]
 *.o
+*.typelib

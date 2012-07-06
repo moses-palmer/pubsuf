@@ -1,3 +1,7 @@
+## Make sure the generated PC files are available without installation.
+export PKG_CONFIG_PATH=.
+
+
 ## Place generated object files (.o) into the same directory as their source
 ## files, in order to avoid collisions when non-recursive make is used.
 AUTOMAKE_OPTIONS = subdir-objects
@@ -6,7 +10,12 @@ AUTOMAKE_OPTIONS = subdir-objects
 ## Additional flags to pass to aclocal when it is invoked automatically at
 ## make time. The ${ACLOCAL_FLAGS} variable is picked up from the environment
 ## to provide a way for the user to supply additional arguments.
-ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
+
+
+## Enable GObject introspection
+DISTCHECK_CONFIGURE_FLAGS = --enable-introspection
+EXTRA_DIST = m4/introspection.m4
 
 
 ## Define a libtool archive target "libexample-@API_VERSION@.la", with
@@ -93,6 +102,34 @@ nobase_pubsuf_include_HEADERS = \
 ## in which case the correct install location would be $(datadir)/pkgconfig.
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pubsuf-$(API_VERSION).pc
+
+
+## Generate GObject Introspection data.
+-include $(INTROSPECTION_MAKEFILE)
+INTROSPECTION_GIRS =
+
+if HAVE_INTROSPECTION
+introspection_sources = $(nobase_pubsuf_include_HEADERS)
+
+PublicSuffix-@API_VERSION@.gir: libpubsuf-@API_VERSION@.la
+PublicSuffix_1_0_gir_INCLUDES = GObject-2.0
+PublicSuffix_1_0_gir_CFLAGS = $(INCLUDES)
+PublicSuffix_1_0_gir_LIBS = libpubsuf-@API_VERSION@.la
+PublicSuffix_1_0_gir_FILES = $(introspection_sources)
+PublicSuffix_1_0_gir_NAMESPACE = PublicSuffix
+PublicSuffix_1_0_gir_PACKAGES = pubsuf-$(API_VERSION)
+PublicSuffix_1_0_gir_VERSION = @API_VERSION@
+PublicSuffix_1_0_gir_SCANNERFLAGS = --header-only --c-include=pubsuf.h
+INTROSPECTION_GIRS += PublicSuffix-@API_VERSION@.gir
+
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(INTROSPECTION_GIRS)
+
+typelibdir = $(libdir)/girepository-1.0
+typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
+endif
 
 
 ## Define an independent executable script for inclusion in the distribution
