@@ -15,7 +15,7 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 ## Enable GObject introspection
 DISTCHECK_CONFIGURE_FLAGS = --enable-introspection
-EXTRA_DIST = m4/introspection.m4
+EXTRA_DIST = m4/introspection.m4 m4/vapigen.m4
 
 
 ## Define a libtool archive target "libexample-@API_VERSION@.la", with
@@ -129,6 +129,22 @@ typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
 CLEANFILES += $(gir_DATA) $(typelib_DATA)
+endif
+
+## Generate a VAPI file from the GObject introspection data
+-include $(VAPIGEN_MAKEFILE)
+VAPIGEN_VAPIS =
+
+if ENABLE_VAPIGEN
+pubsuf-@API_VERSION@.vapi: $(INTROSPECTION_GIRS)
+pubsuf_1_0_vapi_METADATADIRS = $(srcdir)
+pubsuf_1_0_vapi_FILES = $(INTROSPECTION_GIRS)
+VAPIGEN_VAPIS += pubsuf-@API_VERSION@.vapi
+
+vapidir = $(VAPIGEN_VAPIDIR)
+vapi_DATA = $(VAPIGEN_VAPIS)
+
+CLEANFILES += VAPIGEN_VAPIS
 endif
 
 

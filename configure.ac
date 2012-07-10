@@ -14,6 +14,9 @@ AC_CONFIG_MACRO_DIR([m4])
 ## Add support for GObject introspection
 GOBJECT_INTROSPECTION_CHECK([1.30.0])
 
+## Add support for VAPI generation
+VAPIGEN_CHECK()
+
 ## Add support for per-product flags
 AM_PROG_CC_C_O
 

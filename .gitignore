@@ -21,3 +21,4 @@
 *.l[ao]
 *.o
 *.typelib
+*.vapi
