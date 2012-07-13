@@ -2,6 +2,12 @@ AC_INIT([LibPubSuf], [1.0], [mosespalmer@gmail.com], [pubsuf])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10 -Wall -Werr])
 
+## This library requires wget to build
+AC_CHECK_PROG(WGET, [wget], [yes], [no])
+if test "x$WGET" = "xno"; then
+	AC_MSG_ERROR([This library requires wget to build])
+fi
+
 AC_CONFIG_HEADERS([config.h])
 LT_INIT([disable-static])
 
