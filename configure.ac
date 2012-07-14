@@ -8,6 +8,20 @@ if test "x$WGET" = "xno"; then
 	AC_MSG_ERROR([This library requires wget to build])
 fi
 
+## Allow installing a static library
+AC_ARG_ENABLE(staticinstallation,
+	AS_HELP_STRING(
+		[--enable-staticinstallation],
+		[Install a PC file for the static library [yes/no]]))
+AM_CONDITIONAL(STATIC_INSTALLATION, test $enable_staticinstallation = yes)
+AM_COND_IF(STATIC_INSTALLATION,
+	[
+		AC_ENABLE_STATIC()
+	],
+	[
+		AC_DISABLE_STATIC()
+	])
+
 ## Load packaged macros
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -21,7 +35,7 @@ VAPIGEN_CHECK()
 AM_PROG_CC_C_O
 
 AC_CONFIG_HEADERS([config.h])
-LT_INIT([disable-static])
+LT_INIT()
 
 # Define these substitions here to keep all version information in one place.
 # For information on how to properly maintain the library version information,
@@ -32,5 +46,5 @@ AC_SUBST([API_VERSION], [1.0])
 
 # Override the template file name of the generated .pc file, so that there
 # is no need to rename the template file when the API version changes.
-AC_CONFIG_FILES([Makefile pubsuf-${API_VERSION}.pc:pubsuf.pc.in])
+AC_CONFIG_FILES([Makefile pubsuf-${API_VERSION}.pc:pubsuf.pc.in pubsuf-static-${API_VERSION}.pc:pubsuf-static.pc.in])
 AC_OUTPUT

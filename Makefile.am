@@ -103,6 +103,11 @@ nobase_pubsuf_include_HEADERS = \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pubsuf-$(API_VERSION).pc
 
+## Install the static PC file if requested
+if STATIC_INSTALLATION
+pkgconfig_DATA += pubsuf-static-$(API_VERSION).pc
+endif
+
 
 ## Generate GObject Introspection data.
 -include $(INTROSPECTION_MAKEFILE)
