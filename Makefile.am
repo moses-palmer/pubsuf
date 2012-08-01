@@ -53,9 +53,9 @@ tools/effective_tld_names.dat:
 ## Convert the effective TLD names list to C source.
 pubsuf/etlds.c: tools/effective_tld_names.dat
 	python tools/etld-parser.py \
-		"tools/effective_tld_names.dat" \
-		"pubsuf/etlds.h" \
-		"pubsuf/etlds.c"
+		--header-name "pubsuf/etlds.h" \
+		--source-name "pubsuf/etlds.c" \
+		"tools/effective_tld_names.dat"
 
 pubsuf/etlds.h: pubsuf/etlds.c
 

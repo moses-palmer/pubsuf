@@ -159,9 +159,17 @@ def main(database, header_name, source_name):
 
 if __name__ == '__main__':
     import sys
+    import argparse
 
-    if len(sys.argv) != 4:
-        print 'Usage: %s <database> <output header> <output c source>'
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description = 'Parses an eTLD database and outputs formatted data.');
+    parser.add_argument('--header-name',
+        help = 'The header to output')
+    parser.add_argument('--source-name',
+        help = 'The C source file to output')
+    parser.add_argument('database',
+        help = 'The database file to read.')
 
-    sys.exit(main(*(sys.argv[1:])))
+    args = parser.parse_args()
+
+    sys.exit(main(**vars(args)))
