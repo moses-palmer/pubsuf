@@ -102,7 +102,18 @@ def read_etlds(input_file):
         (strip(l).decode('utf-8') for l in input_file.readlines()))
 
 
-def main(database, header_name, source_name):
+def load_etld_database(database):
+    """
+    Reads all effective TLDs found in database and sorts them.
+
+    The sorting is an alphanumerical sorting followed by sorting based on the
+    key <0 if s[0] == '!' else 1 if s[0] == '*' else 2>.
+
+    @param database
+        The file name of the database file.
+    @return a two-dimensional array where the first dimension is the TLD depth
+        and the second the sorted list of effective TLDs
+    """
     # Read all effective TLDs from the database and sort them on string value,
     # and make sure exceptions and then wildcards are preferred within every
     # depth segment
@@ -112,8 +123,13 @@ def main(database, header_name, source_name):
     etlds.sort(key = lambda s: 0 if s[0] == '!' else 1 if s[0] == '*' else 2)
 
     # Create the lists for each depth
-    depths = [[etld for etld in etlds if etld.count('.') + 1 == i]
+    return [[etld for etld in etlds if etld.count('.') + 1 == i]
         for i in range(1, max(e.count('.') for e in etlds) + 1)]
+
+
+def main(database, header_name, source_name):
+    # Load the TLD database
+    depths = load_etld_database(database)
 
     # Get the timestamp of the database
     st = os.stat(database)
