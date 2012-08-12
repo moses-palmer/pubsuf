@@ -36,13 +36,11 @@ lib_LTLIBRARIES = libpubsuf-@API_VERSION@.la
 BUILT_SOURCES = \
 	tools/effective_tld_names.dat \
 	pubsuf/etlds.c \
-	pubsuf/etlds.h \
 	tools/test.txt \
 	tests/etld-tests.def
 CLEANFILES = \
 	tools/effective_tld_names.dat \
 	pubsuf/etlds.c \
-	pubsuf/etlds.h \
 	tools/test.txt \
 	tests/etld-tests.def
 
@@ -53,12 +51,9 @@ tools/effective_tld_names.dat:
 ## Convert the effective TLD names list to C source.
 pubsuf/etlds.c: tools/effective_tld_names.dat
 	python tools/etld-parser.py \
-		--c-source-h "pubsuf/etlds.h" \
 		--c-source-c "pubsuf/etlds.c" \
 		c-source \
 		"tools/effective_tld_names.dat"
-
-pubsuf/etlds.h: pubsuf/etlds.c
 
 ## Download the test definitions from Mozilla.
 tools/test.txt:
