@@ -65,6 +65,59 @@ def load_etld_database(database):
         for i in range(1, max(e.count('.') for e in etlds) + 1)]
 
 
+def binary(depths, binary_out, **kwargs):
+    """
+    Converts an effective TLD database to a header and source file.
+
+    @param depths
+        The effective TLD database.
+    @param binary_out
+        The name of the file to write.
+    @return a list of generated file names
+    """
+    import struct
+
+    # Calculate the size of the depth table; include the terminating 0
+    depth_table = [0] * len(depths)
+    depth_table_size = struct.calcsize(str(len(depth_table) + 1) + 'P')
+
+    # Calculate the sizes of the string tables
+    string_tables = [[0] * len(depth)
+        for depth in depths]
+    string_table_sizes = [struct.calcsize(str(len(string_table) + 1) + 'P')
+        for string_table in string_tables]
+
+    # We start at the end of the depth table
+    offset = depth_table_size
+
+    # Initialise the depth table
+    for depth_index in xrange(len(depth_table)):
+        depth_table[depth_index] = offset
+        offset += string_table_sizes[depth_index]
+
+    # Initialise the string tables and the data buffer
+    data_buffer = ''
+    for depth_index, depth in enumerate(depths):
+        for string_index, string in enumerate(depth):
+            data = string.encode('utf-8') + '\0'
+            string_tables[depth_index][string_index] = offset
+            data_buffer += data
+            offset += len(data)
+
+    # Write the file
+    with open(binary_out, 'wb') as f:
+        f.write(struct.pack(
+            str(len(depth_table) + 1) + 'P',
+            *(depth_table + [0])))
+        for string_table in string_tables:
+            f.write(struct.pack(
+                str(len(string_table) + 1) + 'P',
+                *(string_table + [0])))
+        f.write(data_buffer)
+
+    return (binary_out,)
+
+
 def c_source(depths, c_source_c, **kwargs):
     """
     Converts an effective TLD database to a header and source file.
@@ -120,6 +173,7 @@ static const char *depth%d[] = {
 
 # Intialise the output type map
 output_types = {
+    'binary': binary,
     'c-source': c_source}
 
 
@@ -140,6 +194,8 @@ if __name__ == '__main__':
         description = 'Parses an eTLD database and outputs formatted data.');
     parser.add_argument('--c-source-c',
         help = 'The C source file to output')
+    parser.add_argument('--binary-out',
+        help = 'The binary database to output')
 
     parser.add_argument('output_type',
         help = 'The type of output to generate.', choices = output_types.keys())
