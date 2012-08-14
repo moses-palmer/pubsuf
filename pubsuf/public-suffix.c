@@ -25,6 +25,11 @@ public_suffix_get_domain_name(const char *hostname)
 {
     const char *s;
 
+    /* Make sure the database is available */
+    if (!pubsuf_etlds) {
+        return NULL;
+    }
+
     /* Check for NULL input */
     if (!hostname) {
         return NULL;
@@ -116,6 +121,11 @@ int
 public_suffix_test(const char *string, int depth)
 {
     const char **rule;
+
+    /* Make sure the database is available */
+    if (!pubsuf_etlds) {
+        return 0;
+    }
 
     /* Check for NULL input */
     if (!string) {
