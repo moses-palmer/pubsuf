@@ -22,6 +22,12 @@ AM_COND_IF(STATIC_INSTALLATION,
 		AC_DISABLE_STATIC()
 	])
 
+AC_ARG_ENABLE(externaldatabase,
+        AS_HELP_STRING(
+                [--enable-externaldatabase],
+                [Use an external effective TLD database instead of one compiled into the library [yes/no]]))
+AM_CONDITIONAL(EXTERNAL_DATABASE, test $enable_externaldatabase = yes)
+
 ## Load packaged macros
 AC_CONFIG_MACRO_DIR([m4])
 

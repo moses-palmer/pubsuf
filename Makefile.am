@@ -2,6 +2,10 @@
 export PKG_CONFIG_PATH=.
 
 
+## Let the source know about the data path.
+AM_CPPFLAGS = -DDATA_PATH=\"$(pkgdatadir)\"
+
+
 ## Place generated object files (.o) into the same directory as their source
 ## files, in order to avoid collisions when non-recursive make is used.
 AUTOMAKE_OPTIONS = subdir-objects
@@ -35,14 +39,10 @@ lib_LTLIBRARIES = libpubsuf-@API_VERSION@.la
 ## tools/test.txt is the list of tests.
 BUILT_SOURCES = \
 	tools/effective_tld_names.dat \
-	pubsuf/etlds.c \
-	pubsuf/etlds.h \
 	tools/test.txt \
 	tests/etld-tests.def
 CLEANFILES = \
 	tools/effective_tld_names.dat \
-	pubsuf/etlds.c \
-	pubsuf/etlds.h \
 	tools/test.txt \
 	tests/etld-tests.def
 
@@ -50,14 +50,31 @@ CLEANFILES = \
 tools/effective_tld_names.dat:
 	sh tools/effective_tld_names.sh
 
+if EXTERNAL_DATABASE
+CLEANFILES += \
+	etlds.db
+
+## Convert the effective TLD names list to a database.
+tools/etlds.db: tools/effective_tld_names.dat
+	python tools/etld-parser.py \
+		--binary-out "tools/etlds.db" \
+		binary \
+		"tools/effective_tld_names.dat"
+CLEANFILES += \
+	tools/etlds.db
+else
+BUILT_SOURCES += \
+	pubsuf/etlds.c
+CLEANFILES += \
+	pubsuf/etlds.c
+
 ## Convert the effective TLD names list to C source.
 pubsuf/etlds.c: tools/effective_tld_names.dat
 	python tools/etld-parser.py \
-		"tools/effective_tld_names.dat" \
-		"pubsuf/etlds.h" \
-		"pubsuf/etlds.c"
-
-pubsuf/etlds.h: pubsuf/etlds.c
+		--c-source-c "pubsuf/etlds.c" \
+		c-source \
+		"tools/effective_tld_names.dat"
+endif
 
 ## Download the test definitions from Mozilla.
 tools/test.txt:
@@ -75,8 +92,19 @@ tests/etld-tests.def: tools/test.txt
 ## treated as if it were literally part of the target name, and the variable
 ## name derived from that.
 libpubsuf_@API_VERSION@_la_SOURCES = \
-	pubsuf/etlds.c \
 	pubsuf/public-suffix.c
+
+if EXTERNAL_DATABASE
+libpubsuf_@API_VERSION@_la_SOURCES += \
+	pubsuf/etlds-external.c
+
+pubsuf_databasedir = $(datadir)/pubsuf
+dist_pubsuf_database_DATA = \
+	tools/etlds.db
+else
+libpubsuf_@API_VERSION@_la_SOURCES += \
+	pubsuf/etlds.c
+endif
 
 
 ## Instruct libtool to include ABI version information in the generated shared

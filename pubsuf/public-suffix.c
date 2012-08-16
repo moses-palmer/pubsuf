@@ -25,6 +25,11 @@ public_suffix_get_domain_name(const char *hostname)
 {
     const char *s;
 
+    /* Make sure the database is available */
+    if (!pubsuf_etlds) {
+        return NULL;
+    }
+
     /* Check for NULL input */
     if (!hostname) {
         return NULL;
@@ -46,7 +51,7 @@ public_suffix_get_domain_name(const char *hostname)
         if (s == hostname) {
             break;
         }
-        else if (depth == ETLDS_MAX_DEPTH) {
+        else if (depth == pubsuf_max_depth) {
             s++;
             break;
         }
@@ -117,6 +122,11 @@ public_suffix_test(const char *string, int depth)
 {
     const char **rule;
 
+    /* Make sure the database is available */
+    if (!pubsuf_etlds) {
+        return 0;
+    }
+
     /* Check for NULL input */
     if (!string) {
         return 0;
@@ -134,7 +144,7 @@ public_suffix_test(const char *string, int depth)
 
     /* If the depth is greater that the maximum depth, we already know this is
        not a public suffix */
-    if (depth > ETLDS_MAX_DEPTH) {
+    if (depth > pubsuf_max_depth) {
         return 0;
     }
 
@@ -162,7 +172,7 @@ public_suffix_test(const char *string, int depth)
         }
     }
 
-    if (depth < ETLDS_MAX_DEPTH) {
+    if (depth < pubsuf_max_depth) {
         /* Check the wildcards one level up, since *.public.suffix matches
            public.suffix */
         for (rule = pubsuf_etlds[depth]; *rule; rule++) {
