@@ -51,17 +51,28 @@ const char ***pubsuf_etlds = NULL;
  *     The table to initialise.
  * @param recurse
  *     A recurse counter.
+ * @return non-zero if the table was initialised and validated, and 0 otherwise
  */
-static void
+static int
 initialize_table(ptrdiff_t *table, int recurse)
 {
     while (*table) {
         *table += (ptrdiff_t)(char*)pubsuf_etlds;
+
+        /* Make sure the target is not outside of the buffer */
+        if (*table > (ptrdiff_t)((char*)pubsuf_etlds + pubsuf_etlds_size)) {
+            return 0;
+        }
+
         if (recurse > 0) {
-            initialize_table((ptrdiff_t*)*table, recurse - 1);
+            if (!initialize_table((ptrdiff_t*)*table, recurse - 1)) {
+                return 0;
+            }
         }
         table++;
     }
+
+    return 1;
 }
 
 __attribute__((constructor))
@@ -99,8 +110,20 @@ void public_suffix_initialize(void)
     }
     fclose(f);
 
+    /* Make sure that the last byte of the database is 0; the last byte must be
+       a string NUL termination */
+    if (((char*)pubsuf_etlds)[pubsuf_etlds_size - 1] != 0) {
+        free(pubsuf_etlds);
+        pubsuf_etlds = NULL;
+        return;
+    }
+
     /* Add the required offset to the tables; recurse only once */
-    initialize_table((ptrdiff_t*)pubsuf_etlds, 1);
+    if (!initialize_table((ptrdiff_t*)pubsuf_etlds, 1)) {
+        free(pubsuf_etlds);
+        pubsuf_etlds = NULL;
+        return;
+    }
 
     /* Get the number of depths */
     const char ***tables;
